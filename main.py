@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import cognee_client
+from fastapi.responses import JSONResponse
+import json
+
+app = FastAPI()
 
 app = FastAPI()
 
@@ -22,7 +26,10 @@ async def remember(req: RememberRequest):
 @app.post("/recall")
 async def recall(req: RecallRequest):
     results = await cognee_client.recall(req.query)
-    return {"results": results}
+    return JSONResponse(
+        content={"results": results},
+        media_type="application/json; charset=utf-8"
+    )
 
 @app.post("/forget")
 async def forget(req: ForgetRequest):
