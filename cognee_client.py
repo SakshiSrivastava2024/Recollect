@@ -22,7 +22,9 @@ async def recall(query: str):
     await connect()
     results = await cognee.recall(query)
     await disconnect()
-    return [r['text'] for r in results if 'text' in r]
+    # Debug ke liye
+    print("Raw results:", results)
+    return [r.get('text', str(r)) for r in results if r]
 
 async def forget(dataset: str = "recollect"):
     await connect()
