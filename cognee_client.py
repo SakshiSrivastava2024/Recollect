@@ -22,9 +22,23 @@ async def recall(query: str):
     await connect()
     results = await cognee.recall(query)
     await disconnect()
-    # Debug ke liye
-    print("Raw results:", results)
-    return [r.get('text', str(r)) for r in results if r]
+    
+    # Only return ACTUAL saved data from graph (filter out generic responses)
+    filtered = []
+    for r in results:
+        if isinstance(r, dict) and r.get('source') == 'graph':
+            text = r.get('text', '')
+            # Filter out all generic/AI-generated responses
+            if (text and 
+                'sorry' not in text.lower() and 
+                "i don't" not in text.lower() and
+                "don't have" not in text.lower() and
+                "don't see" not in text.lower() and
+                "can't recommend" not in text.lower()):
+                filtered.append(text)
+    
+    # Return ONLY actual saved items (no artificial padding)
+    return filtered
 
 async def forget(dataset: str = "recollect"):
     await connect()

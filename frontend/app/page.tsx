@@ -1,111 +1,48 @@
 'use client'
-import { useState } from 'react'
 
-export default function Home() {
-  const [text, setText] = useState('')
-  const [dataset, setDataset] = useState('recollect')
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState<string[]>([])
-  const [saveStatus, setSaveStatus] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const handleRemember = async () => {
-    if (!text) return
-    setLoading(true)
-    const res = await fetch('http://localhost:8000/remember', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, dataset })
-    })
-    const data = await res.json()
-    setSaveStatus(data.status === 'saved' ? '✅ Saved!' : '❌ Error')
-    setText('')
-    setLoading(false)
-  }
-
-  const handleRecall = async () => {
-    if (!query) return
-    setLoading(true)
-    const res = await fetch('http://localhost:8000/recall', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query })
-    })
-    const data = await res.json()
-    setResults(data.results || [])
-    setLoading(false)
-  }
-
+export default function Landing() {
   return (
-    <main className="min-h-screen bg-gray-950 text-white p-8">
-      <h1 className="text-4xl font-bold text-center mb-2 text-indigo-400">
-        Recollect
-      </h1>
-      <p className="text-center text-gray-400 mb-10">
-        Your developer workspace memory
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4">
+      <h1 className="text-5xl md:text-7xl font-black mb-6 text-center">Recollect</h1>
+      <p className="text-lg md:text-2xl text-gray-400 mb-12 text-center max-w-2xl">
+        Your developer workspace memory powered by Cognee's knowledge graph
       </p>
-
-      {/* Save Section */}
-      <div className="max-w-2xl mx-auto mb-10 bg-gray-900 p-6 rounded-xl border border-gray-800">
-        <h2 className="text-lg font-semibold mb-4 text-indigo-300">
-          💾 Save a Snippet
-        </h2>
-        <textarea
-          className="w-full bg-gray-800 text-white p-3 rounded-lg mb-3 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="Paste anything — code, link, error, note..."
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <input
-          className="w-full bg-gray-800 text-white p-3 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="Project name (e.g. dashboard redesign)"
-          value={dataset}
-          onChange={(e) => setDataset(e.target.value)}
-        />
-        <button
-          onClick={handleRemember}
-          disabled={loading}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition disabled:opacity-50"
-        >
-          {loading ? 'Saving...' : 'Save to Memory'}
-        </button>
-        {saveStatus && (
-          <p className="text-center mt-3 text-green-400">{saveStatus}</p>
-        )}
+      
+      <div className="flex gap-4 mb-20">
+        <a href="/workspace" className="bg-white text-black px-8 py-4 rounded-lg font-bold hover:bg-gray-100 transition">
+          GET STARTED
+        </a>
+        <a href="#" className="border border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition">
+          LEARN MORE
+        </a>
       </div>
 
-      {/* Recall Section */}
-      <div className="max-w-2xl mx-auto bg-gray-900 p-6 rounded-xl border border-gray-800">
-        <h2 className="text-lg font-semibold mb-4 text-indigo-300">
-          🔍 Recall from Memory
-        </h2>
-        <input
-          className="w-full bg-gray-800 text-white p-3 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="What was that grid layout I saved with the auth hook?"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button
-          onClick={handleRecall}
-          disabled={loading}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition disabled:opacity-50"
-        >
-          {loading ? 'Searching...' : 'Search Memory'}
-        </button>
-
-        {results.length > 0 && (
-          <div className="mt-6 space-y-3">
-            {results.map((r, i) => (
-              <div
-                key={i}
-                className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-200"
-              >
-                {r}
-              </div>
-            ))}
-          </div>
-        )}
+      <div className="grid md:grid-cols-4 gap-8 mt-20 max-w-4xl">
+        <div className="text-center">
+          <div className="text-4xl mb-3">💾</div>
+          <h3 className="font-bold mb-2">remember()</h3>
+          <p className="text-gray-400 text-sm">Save your snippets</p>
+        </div>
+        <div className="text-center">
+          <div className="text-4xl mb-3">🔍</div>
+          <h3 className="font-bold mb-2">recall()</h3>
+          <p className="text-gray-400 text-sm">Search by context</p>
+        </div>
+        <div className="text-center">
+          <div className="text-4xl mb-3">✨</div>
+          <h3 className="font-bold mb-2">improve()</h3>
+          <p className="text-gray-400 text-sm">Get smarter</p>
+        </div>
+        <div className="text-center">
+          <div className="text-4xl mb-3">🗑️</div>
+          <h3 className="font-bold mb-2">forget()</h3>
+          <p className="text-gray-400 text-sm">Remove data</p>
+        </div>
       </div>
-    </main>
+
+      <footer className="border-t border-gray-800 mt-20 pt-8 text-center text-gray-500 text-sm w-full">
+        <p>Built for WeMakeDevs x Cognee Hackathon © 2024</p>
+      </footer>
+    </div>
   )
 }

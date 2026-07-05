@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import cognee_client
-from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -37,6 +36,11 @@ async def recall(req: RecallRequest):
         content={"results": results},
         media_type="application/json; charset=utf-8"
     )
+
+@app.post("/improve")
+async def improve():
+    await cognee_client.improve()
+    return {"status": "memory improved"}
 
 @app.post("/forget")
 async def forget(req: ForgetRequest):
